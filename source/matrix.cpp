@@ -45,7 +45,6 @@ custom::vector operator-(const custom::vector & leftVector_in, const custom::vec
 
 custom::vector operator-(const custom::vector & vector_in)
 {
-    const custom::vector zeroVector = {0};
     return zeroVector - vector_in;
 }
 

@@ -3,10 +3,10 @@
 #include "cButton.hpp"
 
 cButton::cButton():
-onPressed(defaultFunc),
-onReleased(defaultFunc),
 m_status(eStatus::None),
-m_state(eState::Enabled)
+m_state(eState::Enabled),
+onPressed(defaultFunc),
+onReleased(defaultFunc)
 {}
 
 cButton::FuncType cButton::defaultFunc = [](const sf::Event &, cButton &)->void{};

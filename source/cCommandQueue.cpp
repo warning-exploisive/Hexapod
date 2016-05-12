@@ -8,7 +8,7 @@ m_serial(serial)
 {};
 
 void cCommandQueue::addCommand(void(cPololuSerial::*command)(unsigned char channel, int target),
-                               unsigned char channel, int target)
+                               const unsigned char & channel, const int & target)
 {
     m_commandList.push_back(command);
     m_channels.push_back(channel);

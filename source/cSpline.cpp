@@ -84,9 +84,9 @@ m_controlPoints(controlPoints)
                     t += d_t;
                     tempPoint = findPoint(t, p0, p1, p2, p3);
                     preAbsDistance = findAbsValue(nextPoint - tempPoint);
-                    float dolya = (m_distance - absDistance) / preAbsDistance;
+                    double propotion = (m_distance - absDistance) / preAbsDistance;
                     t -= d_t;
-                    d_t *= dolya;
+                    d_t *= propotion;
                     t += d_t;
                 }
             }
@@ -105,8 +105,8 @@ double cSpline::findCoordinate(const double & t, const double & p0, const double
             3.0 * t * t * (1.0 - t) * p2 + t * t * t * p3;
 }
 
-custom::vector cSpline::findPoint(double & t, const custom::vector & p0, const custom::vector & p1,
-                                              const custom::vector & p2, const custom::vector & p3)
+custom::vector cSpline::findPoint(const double & t, const custom::vector & p0, const custom::vector & p1,
+                                                    const custom::vector & p2, const custom::vector & p3)
 {
     custom::vector vector_out = {0};
     for(int inner = 0; inner < AXIS; ++inner)

@@ -17,7 +17,7 @@ const sf::Vector2f & cWidget::getPosition()const
     return m_position;
 }
 
-void cWidget::setPosition(float x, float y)
+void cWidget::setPosition(const float & x, const float & y)
 {
     m_position.x = x;
     m_position.y = y;

@@ -36,4 +36,7 @@ const sf::Vector2f controlContainerPosition {10.f, 20.f},
 //spline parameters
 constexpr float circleRadius = 10.f;
 
+//Text parameters
+constexpr int defaultFontSize = 20;
+
 #endif // GUI_HPP

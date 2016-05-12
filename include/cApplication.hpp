@@ -26,9 +26,10 @@ private:
     cPololuSerial & m_serial;
     cCommandQueue & m_commandQueue;
     cSpiderRobotState & m_spider;
-    std::unique_ptr<cSpline> m_spline;
 
-    const int m_speed = 10;
+    std::unique_ptr<cSpline> m_spline;
+    custom::pointList m_controlVertices;
+
 private:
     void processEvents();
     void update();
@@ -36,6 +37,22 @@ private:
 
     void initGui();
     void initSplineView(cContainer * viewContainer);
+
+    // tactic level
+
+    void addCommands_setTarget();
+    void addOneLegCommand_setTarget(const unsigned char & channel, const unsigned char & leg);
+    void addShutDownCommand();
+    void addCommands_setSpeed(const int & speed);
+    void walkSequence(const double & delta_courseAngle_1, const double & delta_courseAngle_2,
+                      const double & delta_courseAngle_3, const double & delta_lenght_1,
+                      const double & delta_lenght_2, const double & delta_lenght_3, const int & leg);
+    void step(const double & delta_courseAngle_1, const double & delta_courseAngle_2,
+              const double & delta_courseAngle_3, const double & delta_lenght_1,
+              const double & delta_lenght_2, const double & delta_lenght_3, const int & leg);
+    void rotateOnTheSpot(const int & counter);
+    void walk();
+
 protected:
     cApplication();
 public:

@@ -107,4 +107,23 @@ namespace custom
     typedef std::vector<custom::vector> pointList;
 } // namespace custom
 
+// walking constants
+constexpr int speed = 20;
+constexpr double platformHeight = 50.0,
+                 splineDistance = 10.0,
+                 splineTolerance = 1E-3,
+                 rotateOnTheSpotAngle = 5.0;
+
+//states constants(vectors)
+constexpr custom::vector zeroVector = {0.0, 0.0, 0.0},
+                         nullPositionVector = {-3.0, 235.0, 0.0},
+                         defaultPositionVector1 = {50.0, -30.0, 0.0},
+                         defaultPositionVector2 = {50.0, 0.0, 0.0},
+                         defaultPositionVector3 = {50.0, 30.0, 0.0},
+                         defaultPositionVector4 = {-50.0, -30.0, 0.0},
+                         defaultPositionVector5 = {-50.0, 0.0, 0.0},
+                         defaultPositionVector6 = {-50.0, 30.0, 0.0},
+                         defaultStandUpVector = {0.0, 0.0, -platformHeight},
+                         defaultSitDownVector = {0.0, 0.0, platformHeight};
+
 #endif // CONSTANTS_HPP

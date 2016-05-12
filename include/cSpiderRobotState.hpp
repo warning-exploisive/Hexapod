@@ -44,7 +44,7 @@ public:
         static cSpiderRobotState instance;
         return instance;
     }
-    void solveInverseKinematics(custom::vector & transferVector, const int & leg);
+    void solveInverseKinematics(const custom::vector & transferVector, const int & leg);
     double getQ1(int leg) const {return m_legs[leg].calculatedMsState[Q_1];};
     double getQ2(int leg) const {return m_legs[leg].calculatedMsState[Q_2];};
     double getQ3(int leg) const {return m_legs[leg].calculatedMsState[Q_3];};
@@ -53,6 +53,8 @@ public:
     void moveBody(const custom::vector & transferVector);
     void moveToHome();
     void rotateToHome();
+    custom::vector simpleStep(const double & d_course_1, const double & d_course_2, const double & d_course_3,
+                              const double & l_1, const double & l_2, const double & l_3, const int & leg);
 };
 
 #endif // SPIDERROBOTSTATE_HPP

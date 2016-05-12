@@ -17,7 +17,7 @@ public:
     virtual ~cWidget() {};
 
     void setPosition(const sf::Vector2f & position);
-    void setPosition(float x, float y);
+    void setPosition(const float & x, const float & y);
     const sf::Vector2f & getPosition()const;
     virtual sf::Vector2f getSize()const = 0;
 

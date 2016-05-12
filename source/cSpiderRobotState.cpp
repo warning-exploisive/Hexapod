@@ -67,7 +67,7 @@ m_trimAngle(0.0)
     }
 }
 
-void cSpiderRobotState::solveInverseKinematics(custom::vector & transferVector, const int & leg)
+void cSpiderRobotState::solveInverseKinematics(const custom::vector & transferVector, const int & leg)
 {
     //find CalculatedStateVector
     m_legs[leg].calculatedStateVector = m_legs[leg].currentStateVector + findVectorSC0(transferVector, leg);
@@ -180,6 +180,16 @@ void cSpiderRobotState::solveInverseKinematics(const int & leg)
 
     translationToMs(leg);
     swapState(leg);
+    /*
+    std::cout << m_legs[LEG_4].currentStateVector[X] << " "
+              << m_legs[LEG_4].currentStateVector[Y] << " "
+              << m_legs[LEG_4].currentStateVector[Z] << '\n';
+    std::cout << m_legs[LEG_5].currentStateVector[X] << " "
+              << m_legs[LEG_5].currentStateVector[Y] << " "
+              << m_legs[LEG_5].currentStateVector[Z] << '\n';
+    std::cout << m_legs[LEG_6].currentStateVector[X] << " "
+              << m_legs[LEG_6].currentStateVector[Y] << " "
+              << m_legs[LEG_6].currentStateVector[Z] << '\n';*/
 }
 
 void cSpiderRobotState::findBaseToZero(const int & leg)
@@ -214,8 +224,8 @@ void cSpiderRobotState::swapState(const int & leg)
 void cSpiderRobotState::moveBody(const custom::vector & transferVector)
 {
     m_bodyStateVector += transferVector;
-    std::cout << "X = " << m_bodyStateVector[X] << " Y = " << m_bodyStateVector[Y] << " Z = "
-              << m_bodyStateVector[Z] << std::endl;
+    /*std::cout << "X = " << m_bodyStateVector[X] << " Y = " << m_bodyStateVector[Y] << " Z = "
+              << m_bodyStateVector[Z] << std::endl;*/
     for (int leg = 0; leg < LEGS; ++leg)
     {
         //find calculatedStateVector in SC0
@@ -257,8 +267,8 @@ void cSpiderRobotState::rotateBody(const double & deltaTrimAngle,
     simpleBodyRotation(deltaTrimAngle, 0.0, 0.0);
     simpleBodyRotation(0.0, deltaRollAngle, 0.0);
     simpleBodyRotation(0.0, 0.0, deltaCourseAngle);
-    std::cout << "T = " << m_trimAngle << " R = " << m_rollAngle << " C = "
-              << m_courseAngle << std::endl;
+    /*std::cout << "T = " << m_trimAngle << " R = " << m_rollAngle << " C = "
+              << m_courseAngle << std::endl;*/
 }
 
 void cSpiderRobotState::reverseRotateBody(const double & deltaTrimAngle,
@@ -268,8 +278,8 @@ void cSpiderRobotState::reverseRotateBody(const double & deltaTrimAngle,
     simpleBodyRotation(0.0, 0.0, deltaCourseAngle);
     simpleBodyRotation(0.0, deltaRollAngle, 0.0);
     simpleBodyRotation(deltaTrimAngle, 0.0, 0.0);
-    std::cout << "T = " << m_trimAngle << " R = " << m_rollAngle << " C = "
-              << m_courseAngle << std::endl;
+    /*std::cout << "T = " << m_trimAngle << " R = " << m_rollAngle << " C = "
+              << m_courseAngle << std::endl;*/
 }
 
 void cSpiderRobotState::moveToHome()
@@ -281,3 +291,66 @@ void cSpiderRobotState::rotateToHome()
 {
     reverseRotateBody(- m_trimAngle, - m_rollAngle, - m_courseAngle);
 }
+
+custom::vector cSpiderRobotState::simpleStep(const double & d_course_1, const double & d_course_2,
+                                             const double & d_course_3, const double & l_1,
+                                             const double & l_2, const double & l_3, const int & leg)
+{
+    //define translation vectors and rotation matrix
+    custom::vector L_1 = {0.0, l_1, 0.0};
+    custom::vector L_2 = {0.0, l_2, 0.0};
+    custom::vector L_3 = {0.0, l_3, 0.0};
+
+    custom::matrix T_0_1 = rotationMatrixZ(d_course_1);
+    custom::matrix T_1_2 = rotationMatrixZ(d_course_2);
+    custom::matrix T_2_3 = rotationMatrixZ(d_course_3);
+
+    //find LO_vector in BASE SC[i] and SC[i + 3]
+    custom::vector R_1 = compositeRotationMatrix(m_trimAngle, m_rollAngle, 0.0) *
+                         trasposeMatrix(m_legs[leg].baseToZero) * m_legs[leg].L0_vectorSC0;
+    //find R1 + currenrStateVector in BASE SC[i]
+    custom::vector BASE_summary = R_1 + trasposeMatrix(m_legs[leg].baseToZero) * m_legs[leg].currentStateVector;
+    //find BASE_SUMMARY for SC[i + 3] in BASE SC[i]
+    custom::vector BASE_summary_3;
+    if (leg == LEG_1)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector1 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    else if (leg == LEG_2)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector2 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    else if (leg == LEG_3)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector3 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    else if (leg == LEG_4)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector4 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    else if (leg == LEG_5)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector5 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    else if (leg == LEG_6)
+        BASE_summary_3 = T_0_1 * T_1_2 * T_2_3 * (R_1 + defaultPositionVector6 + defaultStandUpVector +
+                         trasposeMatrix(m_legs[leg].baseToZero) * nullPositionVector);
+    //find L in BASE SC[i]
+    custom::vector L = T_0_1 * (L_1 + T_1_2 * (L_2 + T_2_3 * L_3));
+    //find transferVector in BASE SC[i]
+    custom::vector transferVector = L + BASE_summary_3 - BASE_summary;
+    return transferVector;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//1

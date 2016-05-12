@@ -25,7 +25,7 @@ public:
     ~cCommandQueue() {};
 
     void addCommand(void(cPololuSerial::*command)(unsigned char channel, int target),
-                    unsigned char channel, int target);
+                    const unsigned char & channel, const int & target);
     void runCommand();
     void clearQueue();
     bool IsEmpty();

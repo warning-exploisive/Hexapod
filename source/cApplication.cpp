@@ -17,28 +17,19 @@ m_spider(cSpiderRobotState::getInstance())
 
     for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
     {
-        custom::vector transferVector1 = {50.0, -50.0, 0.0};
-        custom::vector transferVector2 = {50.0, 0.0, 0.0};
-        custom::vector transferVector3 = {50.0, 50.0, 0.0};
-        custom::vector transferVector4 = {-50.0, -50.0, 0.0};
-        custom::vector transferVector5 = {-50.0, 0.0, 0.0};
-        custom::vector transferVector6 = {-50.0, 50.0, 0.0};
         if (leg == LEG_1)
-            m_spider.solveInverseKinematics(transferVector1, leg);
+            m_spider.solveInverseKinematics(defaultPositionVector1, leg);
         else if (leg == LEG_2)
-            m_spider.solveInverseKinematics(transferVector2, leg);
+            m_spider.solveInverseKinematics(defaultPositionVector2, leg);
         else if (leg == LEG_3)
-            m_spider.solveInverseKinematics(transferVector3, leg);
+            m_spider.solveInverseKinematics(defaultPositionVector3, leg);
         else if (leg == LEG_4)
-            m_spider.solveInverseKinematics(transferVector4, leg);
+            m_spider.solveInverseKinematics(defaultPositionVector4, leg);
         else if (leg == LEG_5)
-            m_spider.solveInverseKinematics(transferVector5, leg);
+            m_spider.solveInverseKinematics(defaultPositionVector5, leg);
         else if (leg == LEG_6)
-            m_spider.solveInverseKinematics(transferVector6, leg);
-
-        m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-        m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-        m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
+            m_spider.solveInverseKinematics(defaultPositionVector6, leg);
+        addOneLegCommand_setTarget(channel, leg);
         ++leg;
     }
 }
@@ -126,63 +117,19 @@ void cApplication::initGui()
         OFF_ptr->setEnabled();
         START_ptr->setEnabled();
 
+        //ON and set speed
+        addCommands_setSpeed(speed);
         for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
         {
-            m_commandQueue.addCommand(&cPololuSerial::setSpeed, channel, m_speed);
-            m_commandQueue.addCommand(&cPololuSerial::setSpeed, channel + 0x06, m_speed);
-            m_commandQueue.addCommand(&cPololuSerial::setSpeed, channel + 0x0C, m_speed);
+            m_spider.solveInverseKinematics(zeroVector, leg);
+            addOneLegCommand_setTarget(channel, leg);
             ++leg;
         }
+        //stand up
         for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
         {
-            custom::vector transferVector1 = {0.0, 0.0, 0.0};
-            custom::vector transferVector2 = {0.0, 0.0, 0.0};
-            custom::vector transferVector3 = {0.0, 0.0, 0.0};
-            custom::vector transferVector4 = {0.0, 0.0, 0.0};
-            custom::vector transferVector5 = {0.0, 0.0, 0.0};
-            custom::vector transferVector6 = {0.0, 0.0, 0.0};
-            if (leg == LEG_1)
-                m_spider.solveInverseKinematics(transferVector1, leg);
-            else if (leg == LEG_2)
-                m_spider.solveInverseKinematics(transferVector2, leg);
-            else if (leg == LEG_3)
-                m_spider.solveInverseKinematics(transferVector3, leg);
-            else if (leg == LEG_4)
-                m_spider.solveInverseKinematics(transferVector4, leg);
-            else if (leg == LEG_5)
-                m_spider.solveInverseKinematics(transferVector5, leg);
-            else if (leg == LEG_6)
-                m_spider.solveInverseKinematics(transferVector6, leg);
-
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
-            ++leg;
-        }
-        for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
-        {
-            custom::vector transferVector1 = {0.0, 0.0, -50.0};
-            custom::vector transferVector2 = {0.0, 0.0, -50.0};
-            custom::vector transferVector3 = {0.0, 0.0, -50.0};
-            custom::vector transferVector4 = {0.0, 0.0, -50.0};
-            custom::vector transferVector5 = {0.0, 0.0, -50.0};
-            custom::vector transferVector6 = {0.0, 0.0, -50.0};
-            if (leg == LEG_1)
-                m_spider.solveInverseKinematics(transferVector1, leg);
-            else if (leg == LEG_2)
-                m_spider.solveInverseKinematics(transferVector2, leg);
-            else if (leg == LEG_3)
-                m_spider.solveInverseKinematics(transferVector3, leg);
-            else if (leg == LEG_4)
-                m_spider.solveInverseKinematics(transferVector4, leg);
-            else if (leg == LEG_5)
-                m_spider.solveInverseKinematics(transferVector5, leg);
-            else if (leg == LEG_6)
-                m_spider.solveInverseKinematics(transferVector6, leg);
-
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
+            m_spider.solveInverseKinematics(defaultStandUpVector, leg);
+            addOneLegCommand_setTarget(channel, leg);
             ++leg;
         }
     };
@@ -196,55 +143,15 @@ void cApplication::initGui()
         ON_ptr->setEnabled();
         START_ptr->setDisabled();
 
-        m_spider.moveToHome();
+        //sit down
         for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
         {
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
-            ++leg;
-        }
-        m_spider.rotateToHome();
-        for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
-        {
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
-            ++leg;
-        }
-        for (unsigned char channel = 0x00, leg = 0; channel <= 0x05; ++channel)
-        {
-            custom::vector transferVector1 = {0.0, 0.0, 50.0};
-            custom::vector transferVector2 = {0.0, 0.0, 50.0};
-            custom::vector transferVector3 = {0.0, 0.0, 50.0};
-            custom::vector transferVector4 = {0.0, 0.0, 50.0};
-            custom::vector transferVector5 = {0.0, 0.0, 50.0};
-            custom::vector transferVector6 = {0.0, 0.0, 50.0};
-            if (leg == LEG_1)
-                m_spider.solveInverseKinematics(transferVector1, leg);
-            else if (leg == LEG_2)
-                m_spider.solveInverseKinematics(transferVector2, leg);
-            else if (leg == LEG_3)
-                m_spider.solveInverseKinematics(transferVector3, leg);
-            else if (leg == LEG_4)
-                m_spider.solveInverseKinematics(transferVector4, leg);
-            else if (leg == LEG_5)
-                m_spider.solveInverseKinematics(transferVector5, leg);
-            else if (leg == LEG_6)
-                m_spider.solveInverseKinematics(transferVector6, leg);
-
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, m_spider.getQ1(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, m_spider.getQ2(leg));
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, m_spider.getQ3(leg));
+            m_spider.solveInverseKinematics(defaultSitDownVector, leg);
+            addOneLegCommand_setTarget(channel, leg);
             ++leg;
         }
         //shut down
-        for (unsigned char channel = 0x00; channel <= 0x05; ++channel)
-        {
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel, 0x00);
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x06, 0x00);
-            m_commandQueue.addCommand(&cPololuSerial::setTarget, channel + 0x0C, 0x00);
-        }
+        addShutDownCommand();
     };
 
     START->onPressed = [START_ptr = START.get(), STOP_ptr = STOP.get(), OFF_ptr = OFF.get(), this,
@@ -255,8 +162,9 @@ void cApplication::initGui()
         STOP_ptr->setEnabled();
 
         initSplineView(vc_ptr);
+        // walk sequence
+        walk();
     };
-
     STOP->onPressed = [STOP_ptr = STOP.get(), START_ptr = START.get(), OFF_ptr = OFF.get(), this,
                        vc_ptr = viewContainer.get()](const sf::Event & event, cButton & StopButton)
     {
@@ -268,6 +176,7 @@ void cApplication::initGui()
         cSpline * temp_ptr = m_spline.release();
         delete temp_ptr;
 
+        m_controlVertices.clear();
         m_commandQueue.clearQueue();
     };
 
@@ -282,32 +191,41 @@ void cApplication::initGui()
 
 void cApplication::initSplineView(cContainer * viewContainer)
 {
-    custom::pointList controlPoints;
     custom::vector v = {0.0, 0.0, 0.0};
-    controlPoints.push_back(v);
-    v = {0.0, 110.0, 0.0};
-    controlPoints.push_back(v);
-    v = {0.0, 220.0, 0.0};
-    controlPoints.push_back(v);
-    v = {220.0, 220.0, 0.0};
-    controlPoints.push_back(v);
-    
-    for (auto i : controlPoints)
+    m_controlVertices.push_back(v);
+    v = {0.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {100.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+
+    //check Control Vertices
+    if (m_controlVertices.empty())
+    {
+        m_controlVertices.push_back(zeroVector);
+        m_controlVertices.push_back(zeroVector);
+    }
+    else if(m_controlVertices.size() == 1)
+    {
+        m_controlVertices.push_back(zeroVector);
+    }
+
+    for (auto i : m_controlVertices)
     {
         std::unique_ptr<cPoint> point(new cPoint(sf::Vector2f(i[X] + viewContainerSize.x / 2.f,
-                                                              viewContainerSize.y / 2.f - i[Y]),
+                                                 viewContainerSize.y / 2.f - i[Y]),
                                                  circleRadius + 5.f));
         point->setPointColor(redColor);
         viewContainer->addWidget(std::move(point));
     }
 
-    m_spline = std::move(std::unique_ptr<cSpline>(new cSpline(controlPoints)));
+    m_spline = std::move(std::unique_ptr<cSpline>(new cSpline(m_controlVertices)));
 
-    controlPoints = m_spline->getList();
-    for (auto i : controlPoints)
+    custom::pointList points;
+    points = m_spline->getList();
+    for (auto i : points)
     {
         std::unique_ptr<cPoint> point(new cPoint(sf::Vector2f(i[X] + viewContainerSize.x / 2.f,
-                                                              viewContainerSize.y / 2.f - i[Y])));
+                                                 viewContainerSize.y / 2.f - i[Y])));
         viewContainer->addWidget(std::move(point));
     }
 }

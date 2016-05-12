@@ -1,12 +1,13 @@
 //cLabel.cpp
 
 #include "cLabel.hpp"
+#include <cGui.hpp>
 
 cLabel::cLabel(const std::string & text)
 {
     m_text.setFont(m_font);
     setText(text);
-    setFontSize(20);
+    setFontSize(defaultFontSize);
     setTextColor(sf::Color::Black);
 }
 
