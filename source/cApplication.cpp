@@ -191,12 +191,59 @@ void cApplication::initGui()
 
 void cApplication::initSplineView(cContainer * viewContainer)
 {
+    //spline
+    //*
     custom::vector v = {0.0, 0.0, 0.0};
     m_controlVertices.push_back(v);
     v = {0.0, 100.0, 0.0};
     m_controlVertices.push_back(v);
     v = {100.0, 100.0, 0.0};
     m_controlVertices.push_back(v);
+    v = {100.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {200.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {200.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    //*/
+
+    //radius 0.1m
+    /*
+    custom::vector v = {0.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {0.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-100.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-100.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-100.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-200.0, 200.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-200.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-200.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-200.0, 0.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-100.0, 0.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {-100.0, 0.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {0.0, 0.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {0.0, 100.0, 0.0};
+    m_controlVertices.push_back(v);
+    /*/
+
+    //forward 1m
+    /*
+    custom::vector v = {0.0, 0.0, 0.0};
+    m_controlVertices.push_back(v);
+    v = {0.0, 1000.0, 0.0};
+    m_controlVertices.push_back(v);
+    /*/
 
     //check Control Vertices
     if (m_controlVertices.empty())

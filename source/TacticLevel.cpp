@@ -84,9 +84,10 @@ void cApplication::walk()
 
     //remove loops on spline
     for(unsigned int inner = 0; inner < delta_courseAngles.size(); ++inner)
-        if(abs(delta_courseAngles[inner]) > HALF_CIRCLE / 2.0)
-            delta_courseAngles[inner] = sign(delta_courseAngles[inner]) * (abs(delta_courseAngles[inner]) - HALF_CIRCLE);
-
+        if((abs(delta_courseAngles[inner]) > HALF_CIRCLE / 2.0) && (abs(delta_courseAngles[inner]) <= HALF_CIRCLE))
+            delta_courseAngles[inner] = (double)sign(delta_courseAngles[inner]) * (abs(delta_courseAngles[inner]) - HALF_CIRCLE);
+        else if(abs(delta_courseAngles[inner]) > HALF_CIRCLE)
+            delta_courseAngles[inner] = (double)sign(delta_courseAngles[inner]) * (abs(delta_courseAngles[inner]) - HALF_CIRCLE * 2.0);
     //*////////////////////////////////////////////////////////
     for(unsigned int i = 0; i < delta_courseAngles.size(); ++i)
     {
